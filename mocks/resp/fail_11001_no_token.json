@@ -1,0 +1,7 @@
+{
+  "status": {
+    "code": 11001,
+    "description": "Invalid authentication token",
+    "details": "no token in Authorization header"
+  }
+}
