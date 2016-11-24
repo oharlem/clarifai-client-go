@@ -1,0 +1,7 @@
+{
+  "status": {
+    "code": 11100,
+    "description": "Bad request format",
+    "details": "Must supply the 'inputs' field. Check the JSON body of your request."
+  }
+}

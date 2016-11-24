@@ -1,0 +1,37 @@
+{
+  "status": {
+    "code": 10010,
+    "description": "Mixed Success",
+    "details": ""
+  },
+  "inputs": [
+    {
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/metro-north.jpg"
+        }
+      },
+      "id": "c2b94a77f99b4d908574ade5533b9831",
+      "created_at": "0001-01-01T00:00:00Z",
+      "status": {
+        "code": 30100,
+        "description": "Duplicate URL in your application. Check the documentation to allow duplications.",
+        "details": ""
+      }
+    },
+    {
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/puppy.jpeg"
+        }
+      },
+      "id": "e0b800a0eb444a80ac6f13073a15a548",
+      "created_at": "2016-11-26T23:32:21Z",
+      "status": {
+        "code": 30000,
+        "description": "Download complete",
+        "details": ""
+      }
+    }
+  ]
+}

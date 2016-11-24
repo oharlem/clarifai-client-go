@@ -1,8 +1,10 @@
 package clarifai
 
 import (
+	"net/http"
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestNewPredictService(t *testing.T) {
@@ -23,7 +25,7 @@ func TestNewPredictService(t *testing.T) {
 		t.Fatalf("Actual: %v, expected: %v", actual, expected)
 	}
 
-	actual3 := len(svc.Inputs.Inputs)
+	actual3 := len(svc.GetInputObject().Inputs)
 	expected3 := 0
 
 	if actual3 != expected3 {
@@ -31,11 +33,11 @@ func TestNewPredictService(t *testing.T) {
 	}
 }
 
-func TestPredictService_Call_Fail_NoInputs(t *testing.T) {
+func TestPredictService_GetPredictions_Fail_NoInputs(t *testing.T) {
 
 	sess := NewSession(mockClientID, mockClientSecret)
 	svc := NewPredictService(sess)
-	res, err := svc.Call()
+	res, err := svc.GetPredictions()
 
 	expected := &PredictResponse{}
 
@@ -78,37 +80,11 @@ func TestPredictService_AddInput_Success(t *testing.T) {
 		t.Errorf("Should have no errors, but got %+v", err)
 	}
 
-	actual := svc.GetInputsQty()
+	actual := svc.GetInputObject().GetInputsQty()
 	expected := 1
 
 	if actual != expected {
 		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestPredictService_CallValidations_Success(t *testing.T) {
-
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-
-	_ = svc.AddInput(&Input{})
-
-	err := svc.CallValidations()
-
-	if err != nil {
-		t.Errorf("Should have no errors, got %+v ", err)
-	}
-}
-
-func TestPredictService_CallValidations_Fail(t *testing.T) {
-
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-
-	err := svc.CallValidations()
-
-	if err != ErrNoInputs {
-		t.Error("Should return " + ErrNoInputs.Error())
 	}
 }
 
@@ -142,15 +118,83 @@ func TestNewPredictService_GetModel(t *testing.T) {
 	}
 }
 
-func TestNewPredictService_GetModelEndpoint(t *testing.T) {
+func TestPredictService_GetPredictions(t *testing.T) {
 
-	sess := NewSession(mockClientID, mockClientSecret)
+	mux.HandleFunc("/"+apiVersion+"/models/"+PublicModelGeneral+"/outputs", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "application/json")
+
+		PrintMock(t, w, "resp/ok_predict_1img.json")
+	})
+
+	sess.TokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
+
 	svc := NewPredictService(sess)
+	_ = svc.AddInput(ImageInputFromURL("https://samples.clarifai.com/metro-north.jpg", nil))
 
-	actual := svc.GetModelEndpoint()
-	expected := apiHost + "/" + apiVersion + "/models/" + svc.ModelID + "/outputs"
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
+	resp, err := svc.GetPredictions()
+	if err != nil {
+		t.Fatalf("Should have no errors, but got %v", err)
 	}
+
+	expected := &PredictResponse{
+		Status: &ServiceStatus{
+			Code:        10000,
+			Description: "Ok",
+		},
+		Outputs: []*Output{
+			{
+				ID: "c63d80ec8e5c42259e776e776f6ccd09",
+				Status: &ServiceStatus{
+					Code:        10000,
+					Description: "Ok",
+				},
+				CreatedAt: "2016-11-24T11:41:44Z",
+				Model: &Model{
+					Name:      "general-v1.3",
+					ID:        "aaa03c23b3724a16a56b629203edc62c",
+					CreatedAt: "2016-03-09T17:11:39Z",
+					AppID:     "",
+					OutputInfo: &OutputInfo{
+						Message: "Show output_info with: GET /models/{model_id}/output_info",
+						Type:    "concept",
+					},
+					ModelVersion: &ModelVersion{
+						ID:        "aa9ca48295b37401f8af92ad1af0d91d",
+						CreatedAt: "2016-07-13T01:19:12Z",
+						Status: &ServiceStatus{
+							Code:        21100,
+							Description: "Model trained successfully",
+						},
+					},
+				},
+				Input: &Input{
+					ID: "c63d80ec8e5c42259e776e776f6ccd09",
+					Data: &InputData{
+						Image: &ImageData{
+							URL: "https://samples.clarifai.com/metro-north.jpg",
+						},
+					},
+				},
+				Data: &OutputData{
+					Concepts: &OutputConcepts{
+						{
+							ID:    "ai_l8TKp2h5",
+							Name:  "people",
+							AppID: "",
+							Value: 0.99921584,
+						},
+						{
+							ID:    "ai_VPmHr5bm",
+							Name:  "adult",
+							AppID: "",
+							Value: 0.9947057,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	CompareStructs(t, expected, resp)
 }

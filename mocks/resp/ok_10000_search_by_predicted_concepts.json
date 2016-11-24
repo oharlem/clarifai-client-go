@@ -1,0 +1,32 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "hits": [
+    {
+      "score": 1,
+      "input": {
+        "id": "e0b800a0eb444a80ac6f13073a15a548",
+        "created_at": "2016-11-26T23:32:21Z",
+        "data": {
+          "image": {
+            "url": "https://samples.clarifai.com/puppy.jpeg"
+          },
+          "concepts": [
+            {
+              "id": "album",
+              "name": "album",
+              "app_id": "c3915e768bf44e1eb469483642a664ef",
+              "value": 1
+            }
+          ]
+        },
+        "status": {
+          "code": 30000,
+          "description": "Download complete"
+        }
+      }
+    }
+  ]
+}

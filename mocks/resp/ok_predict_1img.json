@@ -33,7 +33,7 @@
         "id": "c63d80ec8e5c42259e776e776f6ccd09",
         "data": {
           "image": {
-            "url": "https://s-media-cache-ak0.pinimg.com/564x/be/20/f1/be20f1305c77aba6eddfcfbb9fae585d.jpg"
+            "url": "https://samples.clarifai.com/metro-north.jpg"
           }
         }
       },
@@ -50,114 +50,6 @@
             "name": "adult",
             "app_id": null,
             "value": 0.9947057
-          },
-          {
-            "id": "ai_TJ9wFfK5",
-            "name": "portrait",
-            "app_id": null,
-            "value": 0.9943278
-          },
-          {
-            "id": "ai_SVshtN54",
-            "name": "one",
-            "app_id": null,
-            "value": 0.9905191
-          },
-          {
-            "id": "ai_dxSG2s86",
-            "name": "man",
-            "app_id": null,
-            "value": 0.9761789
-          },
-          {
-            "id": "ai_JBPqff8z",
-            "name": "art",
-            "app_id": null,
-            "value": 0.9520276
-          },
-          {
-            "id": "ai_RQccV41p",
-            "name": "woman",
-            "app_id": null,
-            "value": 0.92362267
-          },
-          {
-            "id": "ai_XdXkh9Vw",
-            "name": "nude",
-            "app_id": null,
-            "value": 0.91924345
-          },
-          {
-            "id": "ai_Dvvvzjnb",
-            "name": "shirtless",
-            "app_id": null,
-            "value": 0.9016788
-          },
-          {
-            "id": "ai_86sS08Pw",
-            "name": "wear",
-            "app_id": null,
-            "value": 0.8954101
-          },
-          {
-            "id": "ai_fhqpCCSD",
-            "name": "athlete",
-            "app_id": null,
-            "value": 0.88236165
-          },
-          {
-            "id": "ai_94cQBGlt",
-            "name": "two",
-            "app_id": null,
-            "value": 0.8331131
-          },
-          {
-            "id": "ai_hmpsf2PM",
-            "name": "son",
-            "app_id": null,
-            "value": 0.82453
-          },
-          {
-            "id": "ai_vMZvx6j4",
-            "name": "monochrome",
-            "app_id": null,
-            "value": 0.8069737
-          },
-          {
-            "id": "ai_5B7J7fdF",
-            "name": "model",
-            "app_id": null,
-            "value": 0.8042731
-          },
-          {
-            "id": "ai_k76BrtPJ",
-            "name": "music",
-            "app_id": null,
-            "value": 0.7575549
-          },
-          {
-            "id": "ai_GjVpxXrs",
-            "name": "street",
-            "app_id": null,
-            "value": 0.7263062
-          },
-          {
-            "id": "ai_GxSDhQ34",
-            "name": "facial expression",
-            "app_id": null,
-            "value": 0.71619135
-          },
-          {
-            "id": "ai_HRDzXBNl",
-            "name": "actor",
-            "app_id": null,
-            "value": 0.7050116
-          },
-          {
-            "id": "ai_Br1sz8D7",
-            "name": "war",
-            "app_id": null,
-            "value": 0.68902224
           }
         ]
       }

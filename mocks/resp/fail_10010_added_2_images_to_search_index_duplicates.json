@@ -1,0 +1,37 @@
+{
+  "status": {
+    "code": 10020,
+    "description": "Failure",
+    "details": ""
+  },
+  "inputs": [
+    {
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/metro-north.jpg"
+        }
+      },
+      "id": "bf434ddbf6dc4c56b6ba3e459da447e8",
+      "created_at": "0001-01-01T00:00:00Z",
+      "status": {
+        "code": 30100,
+        "description": "Duplicate URL in your application. Check the documentation to allow duplications.",
+        "details": ""
+      }
+    },
+    {
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/puppy.jpeg"
+        }
+      },
+      "id": "beb90488a3fd43e091f486c51ac12b93",
+      "created_at": "0001-01-01T00:00:00Z",
+      "status": {
+        "code": 30100,
+        "description": "Duplicate URL in your application. Check the documentation to allow duplications.",
+        "details": ""
+      }
+    }
+  ]
+}

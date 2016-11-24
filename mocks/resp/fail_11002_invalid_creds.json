@@ -1,0 +1,7 @@
+{
+  "status": {
+    "code": 11002,
+    "description": "Invalid credentials",
+    "details": "invalid client ID (foo) and secret (bar)"
+  }
+}

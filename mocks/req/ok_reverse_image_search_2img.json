@@ -1,0 +1,28 @@
+{
+  "query": {
+    "ands": [
+      {
+        "output": {
+          "input": {
+            "data": {
+              "image": {
+                "url": "https://samples.clarifai.com/metro-north.jpg"
+              }
+            }
+          }
+        }
+      },
+      {
+        "output": {
+          "input": {
+            "data": {
+              "image": {
+                "url": "https://samples.clarifai.com/puppy.jpeg"
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}

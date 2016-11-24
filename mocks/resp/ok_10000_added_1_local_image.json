@@ -1,0 +1,23 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok",
+    "details": ""
+  },
+  "inputs": [
+    {
+      "data": {
+        "image": {
+          "url": "https://s3.amazonaws.com/clarifai-api/img/prod/c3915e768bf44e1eb469483642a664ef/b868b2814a1249db84f869955ad4077f.jpeg"
+        }
+      },
+      "id": "d98733bee75c44ec8234514c531d911d",
+      "created_at": "2016-11-28T03:40:38Z",
+      "status": {
+        "code": 30000,
+        "description": "Download complete",
+        "details": ""
+      }
+    }
+  ]
+}

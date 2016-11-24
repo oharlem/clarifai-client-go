@@ -1,0 +1,21 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "inputs": [
+    {
+      "id": "ce8524a1191d4b47816d07a0f4d06b36",
+      "created_at": "2016-11-21T06:10:09Z",
+      "data": {
+        "image": {
+          "url": "https://samples.clarifai.com/metro-north.jpg"
+        }
+      },
+      "status": {
+        "code": 30000,
+        "description": "Download complete"
+      }
+    }
+  ]
+}

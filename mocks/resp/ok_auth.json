@@ -1,0 +1,9 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "access_token": "bCGdwie3gIJoRISG5Ejz2Je57inNTj",
+  "expires_in": 176400,
+  "scope": "api_access_write api_access api_access_read"
+}

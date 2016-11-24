@@ -4,69 +4,50 @@
 
 clarifai-client-go is an unofficial Go client for [Clarifai](https://www.clarifai.com/), an amazing, powerful AI image and video recognition service. 
 
-## Support
-
-- Go versions: 1.6, 1.7
-- Clarifai API: 2.0
 
 ## Functionality
-Current version of the client supports Predict calls only with ability to:
- - set a specific model
- - add an image input from URL
- - add an image input from a local file referenced by a path
 
-## Basic Use
+#### General 
+- Token refresh on expiry
+- Pagination support
 
-Install the client:
+#### Predict calls
+- Get predictions 
+- With a specific model
+- Add an image input from URL
+- Add an image input from a local file
+  
+#### Input calls
+- Get a list of all inputs
+ 
+#### Search
+- Add images to a search index
+- Search by predicted concepts
+- Search by user supplied concept
+- Reverse image search
+- Search by custom metadata
+- Mixed search by concepts and predictions 
+ 
+ 
+## Installation
 
 ```
 go get -u github.com/mpmlj/clarifai-client-go
 ```
 
-Start using as:
+## Examples
+Check directory /examples for fully-functional examples.
+_You need to update conf.yml with your Clarifai API credentials._
 
-```Go
-package main
-
-import (
-        "fmt"
-
-        client "github.com/mpmlj/clarifai-client-go"
-)
-
-func main() {
-        sess := client.NewSession("app-client-id", "app-client-secret")
-        err := sess.Connect()
-        if err != nil {
-        	panic(err.Error())
-        }
-        
-        svc := client.NewPredictService(sess)
-	    svc.SetModel(client.PublicModelFood)
-	    
-	    _ = svc.AddInput(client.ImageInputFromURL("https://samples.clarifai.com/food.jpg"))
-        
-        resp, err := svc.Call()
-        if err != nil {
-        	panic(err.Error())
-        }
-        
-        fmt.Printf("%+v", resp.Outputs)
-        	
-}
-```
-
-## Demo
-For a more complete demo check out a Feely application from [https://github.com/mpmlj/feely](https://github.com/mpmlj/feely). 
 
 ## Roadmap
 
-- Token refresh on expiry
-- Pagination support
-- Image type validation as per [https://developer-preview.clarifai.com/guide/#supported-types](https://developer-preview.clarifai.com/guide/#supported-types)
-- Search
 - Training
 - Advanced input management
 - Advanced model management
-- Advanced search functions
+
  
+## Support
+
+- Go versions: 1.6, 1.7
+- Clarifai API: 2.0

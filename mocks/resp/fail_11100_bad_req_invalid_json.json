@@ -1,0 +1,7 @@
+{
+  "status": {
+    "code": 11100,
+    "description": "Bad request format",
+    "details": "Invalid json path 'query.ands[0].output.data.data' in request."
+  }
+}

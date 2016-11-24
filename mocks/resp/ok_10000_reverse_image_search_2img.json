@@ -1,0 +1,49 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok",
+    "details": ""
+  },
+  "hits": [
+    {
+      "score": 0.79598457,
+      "input": {
+        "data": {
+          "image": {
+            "url": "https://samples.clarifai.com/metro-north.jpg"
+          }
+        },
+        "id": "ce8524a1191d4b47816d07a0f4d06b36",
+        "created_at": "2016-11-21T06:10:09Z",
+        "status": {
+          "code": 30000,
+          "description": "Download complete",
+          "details": ""
+        }
+      }
+    },
+    {
+      "score": 0.7941614,
+      "input": {
+        "data": {
+          "concepts": [
+            {
+              "id": "album",
+              "value": 1
+            }
+          ],
+          "image": {
+            "url": "https://samples.clarifai.com/puppy.jpeg"
+          }
+        },
+        "id": "e0b800a0eb444a80ac6f13073a15a548",
+        "created_at": "2016-11-26T23:32:21Z",
+        "status": {
+          "code": 30000,
+          "description": "Download complete",
+          "details": ""
+        }
+      }
+    }
+  ]
+}
