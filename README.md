@@ -1,12 +1,13 @@
 # Clarifai Client for Go
 
-[![Clarifai Client Go](https://goreportcard.com/badge/github.com/mpmlj/clarifai-client-go)](https://goreportcard.com/report/github.com/mpmlj/clarifai-client-go) [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](https://github.com/mpmlj/clarifai-client-go/LICENSE.txt) [![GoDoc](https://godoc.org/github.com/mpmlj/clarifai-client-go?status.svg)](https://godoc.org/github.com/mpmlj/clarifai-client-go)
+[![Clarifai Client Go](https://goreportcard.com/badge/github.com/mpmlj/clarifai-client-go)](https://goreportcard.com/report/github.com/mpmlj/clarifai-client-go) [![Apache V2 License](http://img.shields.io/badge/license-Apache%20V2-blue.svg)](https://github.com/mpmlj/clarifai-client-go/LICENSE.txt) [![Build Status](https://travis-ci.org/mpmlj/clarifai-client-go.svg)](https://travis-ci.org/mpmlj/clarifai-client-go) [![GoDoc](https://godoc.org/github.com/mpmlj/clarifai-client-go?status.svg)](https://godoc.org/github.com/mpmlj/clarifai-client-go)
 
 clarifai-client-go is an unofficial Go client for [Clarifai](https://www.clarifai.com/), an amazing, powerful AI image and video recognition service. 
 
-## Clairfai API support
+## Support
 
-Only version 2.0 of Clarifai API is supported!
+- Go versions: 1.6, 1.7
+- Clarifai API: 2.0
 
 ## Functionality
 Current version of the client supports Predict calls only with ability to:
