@@ -9,6 +9,10 @@ type Output struct {
 	Data      *OutputData    `json:"data,omitempty"`
 }
 
+type OutputObject struct {
+	Outputs []*Output `json:"outputs"`
+}
+
 type OutputData struct {
 	Concepts *OutputConcepts `json:"concepts,omitempty"`
 	Image    *ImageData      `json:"image,omitempty"`
@@ -18,7 +22,7 @@ type OutputData struct {
 type OutputConcepts []*OutputConcept
 
 type OutputConcept struct {
-	AppID string  `json:"app_id,omitempty"`
+	AppID *string `json:"app_id,omitempty"`
 	ID    string  `json:"id"`
 	Name  string  `json:"name,omitempty"`
 	Value float64 `json:"value,omitempty"`

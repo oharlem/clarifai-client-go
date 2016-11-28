@@ -13,25 +13,21 @@ func main() {
 		panic(err)
 	}
 
-	sess := cl.NewSession(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-
-	err = sess.Connect()
+	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
 	if err != nil {
 		panic(err)
 	}
 
-	// Search By Concept AND Predicted Concept.
-	svc8 := cl.NewSearchService(sess)
+	q := cl.NewSearchQuery(cl.SearchQueryTypeAnd)
+	q.WithUserConcept("album")  // inputs
+	//q.WithoutAPIConcept("dog") // outputs
+	q.SetPagination(1, 5)
 
-	q := cl.NewQuery()
-
-	q.AddOutputConcepts([]string{"album", "test"})
-	q.AddInputConcepts([]string{"album"})
-
-	resp8, err := svc8.Call(q)
+	resp, err := sess.Search(q)
 	if err != nil {
 		panic(err)
 	}
 
-	cl.PP(resp8)
+	cl.PP(resp)
+
 }

@@ -13,23 +13,37 @@ func main() {
 		panic(err)
 	}
 
-	sess := cl.NewSession(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-
-	err = sess.Connect()
+	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
 	if err != nil {
 		panic(err)
 	}
 
-	// Add images to search index.
-	svc := cl.NewSearchService(sess)
+	// Create a new request.
+	r := cl.NewRequest(sess)
 
-	i, err := cl.ImageInputFromPath("test_image.jpg")
+	// Prepare a new image from URL.
+	i, err := cl.NewImageFromFile("../Dave_Gahan_New_York_2015-10-22.jpg")
 	if err != nil {
 		panic(err)
 	}
-	_ = svc.AddInput(i)
 
-	resp, err := svc.AddImagesToIndex() // response can be ignored
+	// Add a concepts.
+	i.AddConcepts("badn", "Dave Gahan", "Depeche Mode")
+
+	// Allow adding duplicate images (off by default).
+	i.AllowDuplicates()
+
+	// Add custom metadata.
+	m := map[string]string{
+		"event_type": "show",
+	}
+	i.AddMetadata(m)
+
+	// Add image to request.
+	_ = r.AddImageInput(i)
+
+	// Send request.
+	resp, err := sess.AddImagesToIndex(r)
 	if err != nil {
 		panic(err)
 	}

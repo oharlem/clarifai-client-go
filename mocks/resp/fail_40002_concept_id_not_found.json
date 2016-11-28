@@ -1,0 +1,8 @@
+{
+  "status": {
+    "code": 40002,
+    "description": "Invalid search request",
+    "details": "Concept ID 'event_type' was not found, please refine you search by concept ID."
+  },
+  "hits": null
+}

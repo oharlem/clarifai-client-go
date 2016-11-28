@@ -1,7 +1,9 @@
 package clarifai
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -12,8 +14,15 @@ import (
 const (
 	apiHost    = "https://api.clarifai.com"
 	apiVersion = "v2"
-	userAgent  = "clarifai-client-go/0.2"
 )
+
+var (
+	userAgent string
+)
+
+func init() {
+	userAgent = "clarifai-client-go/" + ClientVersion
+}
 
 type Session struct {
 	ClientID        string
@@ -36,7 +45,25 @@ type AuthStatus struct {
 	Details     string `json:"details"`
 }
 
+// ServiceStatus is a universal status info object.
+type ServiceStatus struct {
+	Code        int    `json:"code"`
+	Description string `json:"description"`
+	Details     string `json:"details,omitempty"` // optional
+}
+
 // NewSession returns a default session object.
+func Connect(clientID, clientSecret string) (*Session, error) {
+	sess := NewSession(clientID, clientSecret)
+
+	err := sess.Connect()
+	if err != nil {
+		return sess, err
+	}
+
+	return sess, nil
+}
+
 func NewSession(clientID, clientSecret string) *Session {
 	return &Session{
 		ClientID:     clientID,
@@ -129,6 +156,70 @@ func AuthResponseValidation(r *AuthResponse) error {
 
 	if r.AccessToken == "" {
 		return ErrNoAuthenticationToken
+	}
+
+	return nil
+}
+
+// Prepare any payload for the HTTP call.
+func PrepPayload(i interface{}) (io.Reader, error) {
+
+	var payload io.Reader
+	body, err := json.Marshal(i)
+	if err != nil {
+		return payload, err
+	}
+
+	payload = bytes.NewReader(body)
+
+	return payload, nil
+}
+
+// PostCall is a wrapper for HTTPCall for POST requests.
+func (s *Session) PostCall(endpoint string, payload io.Reader, resp interface{}) error {
+	return s.HTTPCall(http.MethodPost, endpoint, payload, resp)
+}
+
+// GetCall is a wrapper for HTTPCall for GET requests.
+func (s *Session) GetCall(endpoint string, resp interface{}) error {
+	return s.HTTPCall(http.MethodGet, endpoint, nil, resp)
+}
+
+// HTTPCall is a universal service caller with (re-)authentication and unmarshalling.
+func (s *Session) HTTPCall(method, endpoint string, payload io.Reader, resp interface{}) error {
+
+	// Check for token expiration. If expired, re-authorize.
+	if s.IsTokenExpired() {
+		err := s.Connect()
+		if err != nil {
+			return err
+		}
+	}
+
+	req, err := http.NewRequest(method, endpoint, payload)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", "Bearer "+s.GetAccessToken())
+	req.Header.Set("Content-Type", "application/json")
+
+	httpClient := &http.Client{}
+	res, err := httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return err
+	}
+
+	//PP(string(body))
+
+	err = json.Unmarshal(body, resp)
+	if err != nil {
+		return err
 	}
 
 	return nil
