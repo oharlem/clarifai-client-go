@@ -2,45 +2,103 @@ package clarifai
 
 import (
 	"net/http"
+	"reflect"
 	"testing"
 	"time"
 )
 
-func TestImageInputFromPath(t *testing.T) {
-	path := "mocks/test_image.jpg"
+func TestInitInputs(t *testing.T) {
+	i := InitInputs()
 
-	i, err := NewImageFromFile(path)
-
-	if err != nil {
-		t.Fatalf("Should have no errors, but got %+v", err)
+	if reflect.TypeOf(i).String() != "*clarifai.Inputs" {
+		t.Fatalf("Actual: %v, expected: *clarifai.Inputs", reflect.TypeOf(i))
 	}
+	actual := i.modelID
+	expected := PublicModelGeneral
 
-	if i.Properties.Base64 != TestImageBase64 {
-		t.Errorf("Actual: %v, expected: %v", i.Properties.Base64, TestImageBase64)
-	}
-}
-
-func TestValidateLocalFile_Fail(t *testing.T) {
-	path := "mocks/unsupported_mime_type_gif.gif"
-	expected := ErrUnsupportedMimeType
-
-	_, err := NewImageFromFile(path)
-	if err != expected {
-		t.Errorf("Actual: %v, expected: %v", err, expected)
+	if actual != expected {
+		t.Fatalf("Actual: %v, expected: %v", actual, expected)
 	}
 }
 
-func TestImageInputFromURL(t *testing.T) {
-	url := "https://samples.clarifai.com/metro-north.jpg"
+func TestInputs_AddImageInput(t *testing.T) {
 
-	i := NewImageFromURL(url)
+	data := InitInputs()
+	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
 
-	if i.Properties.URL != url {
-		t.Errorf("Actual: %v, expected: %v", i.Properties.URL, url)
+	_ = data.AddImageInput(i, "travel-1")
+
+	expected := "https://samples.clarifai.com/travel.jpg"
+	actual := data.Inputs[0].Data.Properties.URL
+
+	if actual != expected {
+		t.Fatalf("Actual: %v, expected: %v", actual, expected)
 	}
 }
 
-func TestInputService_ListAllInputs(t *testing.T) {
+func TestInputs_AddImageInput_Limit(t *testing.T) {
+
+	data := InitInputs()
+	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
+
+	for j := 0; j < InputLimit; j++ {
+		_ = data.AddImageInput(i, "travel-1")
+	}
+
+	// This element should be out of limit.
+	err := data.AddImageInput(i, "travel-1")
+	if err != ErrInputLimitReached {
+		t.Fatalf("Expected limit error \"%v\", but got: %v", ErrInputLimitReached, err)
+	}
+}
+
+func TestInputs_SetModel(t *testing.T) {
+
+	i := InitInputs()
+	i.SetModel(PublicModelFood)
+
+	actual := i.modelID
+	expected := PublicModelFood
+
+	if actual != expected {
+		t.Fatalf("Actual: %v, expected: %v", actual, expected)
+	}
+}
+
+func TestInput_AddConcept(t *testing.T) {
+
+	i := &Input{}
+	i.AddConcept("foo", true)
+
+	expected := map[string]interface{}{
+		"name":  "foo",
+		"value": true,
+	}
+	actual := i.Data.Concepts[0]
+
+	if !reflect.DeepEqual(actual, expected) {
+		t.Fatalf("Actual: %v, expected: %v", actual, expected)
+	}
+}
+
+func TestInput_SetMetadata(t *testing.T) {
+	i := &Input{}
+
+	i.SetMetadata(map[string]interface{}{
+		"event_type": "vacation",
+	})
+
+	actual := i.Data.Metadata
+	expected := map[string]interface{}{
+		"event_type": "vacation",
+	}
+
+	if !reflect.DeepEqual(actual, expected) {
+		t.Fatalf("Actual: %v, expected: %v", actual, expected)
+	}
+}
+
+func TestSession_GetAllInputs(t *testing.T) {
 
 	mux.HandleFunc("/"+apiVersion+"/inputs", func(w http.ResponseWriter, r *http.Request) {
 
@@ -51,10 +109,9 @@ func TestInputService_ListAllInputs(t *testing.T) {
 		PrintMock(t, w, "resp/ok_inputs.json")
 	})
 
-	sess.TokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
+	sess.tokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
 
-	r := NewRequest(sess)
-	resp, err := sess.ListAllInputs(r)
+	resp, err := sess.GetAllInputs().Do()
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %v", err)
 	}
@@ -82,4 +139,32 @@ func TestInputService_ListAllInputs(t *testing.T) {
 	}
 
 	CompareStructs(t, expected, resp)
+}
+
+func TestSession_AddInputs(t *testing.T) {
+
+	data := InitInputs()
+	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
+	_ = data.AddImageInput(i, "travel-1")
+
+	resp := sess.AddInputs(data)
+	if reflect.TypeOf(resp).String() != "*clarifai.Request" {
+		t.Fatalf("Actual: %v, expected: %v", reflect.TypeOf(resp).String(), "*clarifai.Request")
+	}
+
+	if reflect.TypeOf(resp.session).String() != "*clarifai.Session" {
+		t.Fatalf("Actual: %v, expected: %v", reflect.TypeOf(resp.session).String(), "*clarifai.Session")
+	}
+
+	if resp.method != http.MethodPost {
+		t.Fatal("Method should be POST.")
+	}
+
+	if resp.path != "inputs" {
+		t.Fatalf("Actual: %v, expected: %v", resp.path, "inputs")
+	}
+
+	if resp.payload == nil {
+		t.Fatal("Payload should not be nil.")
+	}
 }

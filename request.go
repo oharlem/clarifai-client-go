@@ -1,67 +1,93 @@
 package clarifai
 
-// Requester is an interface for all request-type objects: Request, SearchQuery.
-type Requester interface {
-	GetPage() int
-	GetPerPage() int
-}
+import (
+	"net/http"
+	"net/url"
+	"strconv"
+)
 
+const (
+	defaultPage            = 1
+	defaultItemsPerPageQty = 20
+)
+
+// Request contains all information necessary to create a request to Clarifai API.
 type Request struct {
-	Inputs  []*Input `json:"inputs"`
-	ModelID string   `json:"-"`
-	Page    int      `json:"-"`
-	PerPage int      `json:"-"`
+	method  string
+	page    int
+	perPage int
+	path    string
+	payload interface{}
+	session *Session
 }
 
-func (r *Request) GetPage() int {
-	return r.Page
-}
-
-func (r *Request) GetPerPage() int {
-	return r.PerPage
-}
-
-// WithPagination sets pagination configuration to the request.
-func (r *Request) WithPagination(page, perPage int) {
-	r.Page = page
-	r.PerPage = perPage
-}
-
-func (r *Request) GetModel() string {
-	return r.ModelID
-}
-
-func (r *Request) AddInput(i *Input) error {
-	if len(r.Inputs) >= InputLimit {
-		return ErrInputLimitReached
-	}
-	r.Inputs = append(r.Inputs, i)
-	return nil
-}
-
-// AddImageInput adds an image input to a request.
-func (r *Request) AddImageInput(i *Image) error {
-	if len(r.Inputs) >= InputLimit {
-		return ErrInputLimitReached
-	}
-
-	in := &Input{
-		Data: i,
-	}
-
-	r.Inputs = append(r.Inputs, in)
-	return nil
-}
-
-// SetModel is an optional model setter for predict calls. Defaults to the general model.
-func (r *Request) SetModel(modelID string) {
-	r.ModelID = modelID
-}
-
-func NewRequest(s *Session) *Request {
+// NewRequest generates a new Request object with default settings.
+func NewRequest(s *Session, method, path string) *Request {
 	return &Request{
-		ModelID: PublicModelGeneral,
-		Page:    0,
-		PerPage: DefaultItemsPerPageQty,
+		method: method,
+		// First page number is 1, not 0, but I use default 0
+		// is an indicator of unset value for pagination logic.
+		path:    path,
+		page:    defaultPage,
+		perPage: defaultItemsPerPageQty,
+		session: s,
 	}
+}
+
+func (r *Request) SetPayload(p interface{}) {
+	r.payload = p
+}
+
+// WithPagination adds pagination configuration to the request.
+func (r *Request) WithPagination(page, perPage int) *Request {
+	r.page = page
+	r.perPage = perPage
+
+	return r
+}
+
+// Do sends a request to API.
+func (r *Request) Do() (*Response, error) {
+
+	var resp *Response
+	var err error
+
+	switch r.method {
+	case http.MethodGet:
+		r.addPagination()
+		resp, err = r.session.HTTPCall(r.method, r.path, nil)
+	case http.MethodPost, http.MethodPatch, http.MethodDelete:
+		r.addPagination()
+		resp, err = r.session.HTTPCall(r.method, r.path, r.payload)
+	default:
+		panic("Unsupported HTTP method!")
+	}
+
+	return resp, err
+}
+
+// addPagination adds pagination arguments to endpoint path.
+func (r *Request) addPagination() {
+
+	if r.page > 0 && r.perPage > 0 {
+
+		// Some actions add pagination as part of their request body.
+		if r.method == http.MethodPost {
+			p, ok := r.payload.(*SearchRequest) // for /searches
+			if ok {
+				p.Pagination = &pagination{
+					Page:    r.page,
+					PerPage: r.perPage,
+				}
+			}
+			r.payload = p
+
+		} else {
+			v := url.Values{}
+			v.Set("page", strconv.Itoa(r.page))
+			v.Add("per_page", strconv.Itoa(r.perPage))
+			r.path += "?" + v.Encode()
+		}
+	}
+
 }

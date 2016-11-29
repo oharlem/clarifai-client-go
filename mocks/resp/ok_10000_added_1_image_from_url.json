@@ -1,0 +1,44 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "inputs": [
+    {
+      "data": {
+        "concepts": [
+          {
+            "app_id": "c3915e768bf44e1eb469483642a664ef",
+            "id": "album",
+            "name": "album",
+            "value": 1
+          },
+          {
+            "app_id": "c3915e768bf44e1eb469483642a664ef",
+            "id": "celebration",
+            "name": "celebration",
+            "value": 1
+          }
+        ],
+        "metadata": {
+          "event_type": "wedding"
+        },
+        "image": {
+          "url": "https://samples.clarifai.com/wedding.jpg",
+          "crop": [
+            0.2,
+            0.4,
+            0.3,
+            0.6
+          ]
+        }
+      },
+      "id": "a1e194d39c984fc18adbe7e631f30461",
+      "created_at": "2016-12-06T01:31:21Z",
+      "status": {
+        "code": 30000,
+        "description": "Download complete"
+      }
+    }
+  ]
+}

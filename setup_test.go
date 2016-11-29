@@ -7,8 +7,8 @@ import (
 	"net/http/httptest"
 	"os"
 	"reflect"
-	"testing"
 	"strings"
+	"testing"
 )
 
 const (
@@ -35,7 +35,7 @@ func setup() {
 	mux = http.NewServeMux()
 	ts = httptest.NewServer(mux)
 	sess = NewSession(mockClientID, mockClientSecret)
-	sess.SetHost(ts.URL)
+	sess.host = ts.URL
 }
 
 func shutdown() {

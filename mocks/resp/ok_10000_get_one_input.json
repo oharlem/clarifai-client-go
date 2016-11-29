@@ -1,0 +1,42 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "input": {
+    "data": {
+      "concepts": [
+        {
+          "app_id": "c3915e768bf44e1eb469483642a664ef",
+          "id": "badn",
+          "name": "badn",
+          "value": 1
+        },
+        {
+          "app_id": "c3915e768bf44e1eb469483642a664ef",
+          "id": "Dave Gahan",
+          "name": "Dave Gahan",
+          "value": 1
+        },
+        {
+          "app_id": "c3915e768bf44e1eb469483642a664ef",
+          "id": "Depeche Mode",
+          "name": "Depeche Mode",
+          "value": 1
+        }
+      ],
+      "metadata": {
+        "event_type": "show"
+      },
+      "image": {
+        "url": "https://s3.amazonaws.com/clarifai-api/img/prod/c3915e768bf44e1eb469483642a664ef/e1f76156b31a4c4386c9d43345602383.jpeg"
+      }
+    },
+    "id": "ce9aeedd3be64cbd968861599412d5e6",
+    "created_at": "2016-11-29T03:49:37Z",
+    "status": {
+      "code": 30000,
+      "description": "Download complete"
+    }
+  }
+}
