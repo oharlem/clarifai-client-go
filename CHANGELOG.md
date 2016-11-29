@@ -1,7 +1,7 @@
-Release v0.1.0 (2016-11-24) aka "Thanksgiving Waiting Time"
+Release v0.3.0 (2016-11-28)
 ===
-* Authentication
-* Basic prediction functionality: request by model, URL and base64 images as inputs. 
+* Major refactoring & cleanup.
+
 
 Release v0.2.0 (2016-11-28)
 ===
@@ -19,3 +19,9 @@ Release v0.2.0 (2016-11-28)
 * Image type validation as per [https://developer-preview.clarifai.com/guide/#supported-types](https://developer-preview.clarifai.com/guide/#supported-types)
 * Refactoring
 * Added examples into examples/ directory.
+
+
+Release v0.1.0 (2016-11-24) aka "Thanksgiving Waiting Time"
+===
+* Authentication
+* Basic prediction functionality: request by model, URL and base64 images as inputs. 

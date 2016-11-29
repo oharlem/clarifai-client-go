@@ -9,14 +9,14 @@ import (
 func TestImageInputFromPath(t *testing.T) {
 	path := "mocks/test_image.jpg"
 
-	i, err := ImageInputFromPath(path)
+	i, err := NewImageFromFile(path)
 
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %+v", err)
 	}
 
-	if i.Data.Image.Base64 != TestImageBase64 {
-		t.Errorf("Actual: %v, expected: %v", i.Data.Image.Base64, TestImageBase64)
+	if i.Properties.Base64 != TestImageBase64 {
+		t.Errorf("Actual: %v, expected: %v", i.Properties.Base64, TestImageBase64)
 	}
 }
 
@@ -24,7 +24,7 @@ func TestValidateLocalFile_Fail(t *testing.T) {
 	path := "mocks/unsupported_mime_type_gif.gif"
 	expected := ErrUnsupportedMimeType
 
-	_, err := ImageInputFromPath(path)
+	_, err := NewImageFromFile(path)
 	if err != expected {
 		t.Errorf("Actual: %v, expected: %v", err, expected)
 	}
@@ -33,10 +33,10 @@ func TestValidateLocalFile_Fail(t *testing.T) {
 func TestImageInputFromURL(t *testing.T) {
 	url := "https://samples.clarifai.com/metro-north.jpg"
 
-	i := ImageInputFromURL(url, nil)
+	i := NewImageFromURL(url)
 
-	if i.Data.Image.URL != url {
-		t.Errorf("Actual: %v, expected: %v", i.Data.Image.URL, url)
+	if i.Properties.URL != url {
+		t.Errorf("Actual: %v, expected: %v", i.Properties.URL, url)
 	}
 }
 
@@ -53,27 +53,26 @@ func TestInputService_ListAllInputs(t *testing.T) {
 
 	sess.TokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
 
-	svc := NewInputService(sess)
-	resp, err := svc.ListAllInputs()
-
+	r := NewRequest(sess)
+	resp, err := sess.ListAllInputs(r)
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %v", err)
 	}
 
-	expected := &InputResponse{
+	expected := &Response{
 		Status: &ServiceStatus{
 			Code:        10000,
 			Description: "Ok",
 		},
 		Inputs: []*Input{
 			{
-				ID:        "ce8524a1191d4b47816d07a0f4d06b36",
-				CreatedAt: "2016-11-21T06:10:09Z",
-				Data: &InputData{
-					Image: &ImageData{
+				Data: &Image{
+					Properties: &ImageProperties{
 						URL: "https://samples.clarifai.com/metro-north.jpg",
 					},
 				},
+				ID:        "ce8524a1191d4b47816d07a0f4d06b36",
+				CreatedAt: "2016-11-21T06:10:09Z",
 				Status: &ServiceStatus{
 					Code:        30000,
 					Description: "Download complete",

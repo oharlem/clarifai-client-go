@@ -13,22 +13,21 @@ func main() {
 		panic(err)
 	}
 
-	sess := cl.NewSession(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-
-	err = sess.Connect()
+	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
 	if err != nil {
 		panic(err)
 	}
 
 	// Search By Custom Metadata.
-	svc := cl.NewSearchService(sess)
+	q := cl.NewSearchQuery(cl.SearchQueryTypeAnd)
 
 	// Sample metadata.
-	m := map[string]int{
-		"version": 1,
+	m := map[string]interface{}{
+		"event_type": "wedding",
 	}
+	q.WithMetadata(m)
 
-	resp, err := svc.SearchByCustomMetadata(m)
+	resp, err := sess.Search(q)
 	if err != nil {
 		panic(err)
 	}

@@ -1,0 +1,15 @@
+{
+  "inputs": [
+    {
+      "data": {
+        "image": {
+          "allow_duplicate_url": false,
+          "url": "https://samples.clarifai.com/wedding.jpg"
+        },
+        "metadata": {
+          "event_type": "wedding"
+        }
+      }
+    }
+  ]
+}

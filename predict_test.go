@@ -2,100 +2,16 @@ package clarifai
 
 import (
 	"net/http"
-	"reflect"
 	"testing"
 	"time"
 )
 
-func TestNewPredictService(t *testing.T) {
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-
-	actual := reflect.TypeOf(svc.Session).String()
-	expected := "*clarifai.Session"
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-
-	actual = svc.ModelID
-	expected = PublicModelGeneral
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-
-	actual3 := len(svc.GetInputObject().Inputs)
-	expected3 := 0
-
-	if actual3 != expected3 {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestPredictService_GetPredictions_Fail_NoInputs(t *testing.T) {
-
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-	res, err := svc.GetPredictions()
-
-	expected := &PredictResponse{}
-
-	if !reflect.DeepEqual(res, expected) {
-		t.Fatalf("Actual: %v, expected: %v", res, expected)
-	}
-
-	if err != ErrNoInputs {
-		t.Error("Should return " + ErrNoInputs.Error())
-	}
-}
-
-func TestPredictService_AddInput_Limit(t *testing.T) {
-
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-
-	var err error
-
-	for i := 0; i < 128; i++ {
-		err = svc.AddInput(&Input{})
-		if err != nil {
-			t.Fatal("Should return no errors")
-		}
-	}
-
-	err = svc.AddInput(&Input{})
-	if err != ErrInputLimitReached {
-		t.Error("Should return " + ErrInputLimitReached.Error())
-	}
-}
-
-func TestPredictService_AddInput_Success(t *testing.T) {
-
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
-
-	err := svc.AddInput(&Input{})
-	if err != nil {
-		t.Errorf("Should have no errors, but got %+v", err)
-	}
-
-	actual := svc.GetInputObject().GetInputsQty()
-	expected := 1
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
 func TestNewPredictService_SetModel(t *testing.T) {
 
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
+	r := NewRequest(sess)
+	r.SetModel(PublicModelFood)
 
-	svc.SetModel(PublicModelFood)
-
-	actual := svc.ModelID
+	actual := r.ModelID
 	expected := PublicModelFood
 
 	if actual != expected {
@@ -105,12 +21,10 @@ func TestNewPredictService_SetModel(t *testing.T) {
 
 func TestNewPredictService_GetModel(t *testing.T) {
 
-	sess := NewSession(mockClientID, mockClientSecret)
-	svc := NewPredictService(sess)
+	r := NewRequest(sess)
+	r.SetModel(PublicModelFood)
 
-	svc.SetModel(PublicModelFood)
-
-	actual := svc.GetModel()
+	actual := r.GetModel()
 	expected := PublicModelFood
 
 	if actual != expected {
@@ -129,27 +43,26 @@ func TestPredictService_GetPredictions(t *testing.T) {
 
 	sess.TokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
 
-	svc := NewPredictService(sess)
-	_ = svc.AddInput(ImageInputFromURL("https://samples.clarifai.com/metro-north.jpg", nil))
-
-	resp, err := svc.GetPredictions()
+	r := NewRequest(sess)
+	_ = r.AddImageInput(NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"))
+	resp, err := sess.GetPredictions(r)
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %v", err)
 	}
 
-	expected := &PredictResponse{
+	expected := &Response{
 		Status: &ServiceStatus{
 			Code:        10000,
 			Description: "Ok",
 		},
 		Outputs: []*Output{
 			{
-				ID: "c63d80ec8e5c42259e776e776f6ccd09",
+				ID: "cf0e878cd2304d888caa2bcb69a77f56",
 				Status: &ServiceStatus{
 					Code:        10000,
 					Description: "Ok",
 				},
-				CreatedAt: "2016-11-24T11:41:44Z",
+				CreatedAt: "2016-11-29T03:15:05Z",
 				Model: &Model{
 					Name:      "general-v1.3",
 					ID:        "aaa03c23b3724a16a56b629203edc62c",
@@ -169,26 +82,24 @@ func TestPredictService_GetPredictions(t *testing.T) {
 					},
 				},
 				Input: &Input{
-					ID: "c63d80ec8e5c42259e776e776f6ccd09",
-					Data: &InputData{
-						Image: &ImageData{
+					Data: &Image{
+						Properties: &ImageProperties{
 							URL: "https://samples.clarifai.com/metro-north.jpg",
 						},
 					},
+					ID: "cf0e878cd2304d888caa2bcb69a77f56",
 				},
 				Data: &OutputData{
 					Concepts: &OutputConcepts{
 						{
-							ID:    "ai_l8TKp2h5",
-							Name:  "people",
-							AppID: "",
-							Value: 0.99921584,
+							ID:    "ai_HLmqFqBf",
+							Name:  "train",
+							Value: 0.9989112,
 						},
 						{
-							ID:    "ai_VPmHr5bm",
-							Name:  "adult",
-							AppID: "",
-							Value: 0.9947057,
+							ID:    "ai_fvlBqXZR",
+							Name:  "railway",
+							Value: 0.9975532,
 						},
 					},
 				},

@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"testing"
+	"strings"
 )
 
 const (
@@ -47,7 +48,7 @@ func PrintMock(t *testing.T, w http.ResponseWriter, path string) {
 		t.Fatalf("Error reading a mock file: %s", path)
 	}
 
-	fmt.Fprintln(w, string(mock))
+	fmt.Fprintln(w, strings.TrimSpace(string(mock)))
 }
 
 func CompareStructs(t *testing.T, expected, actual interface{}) {

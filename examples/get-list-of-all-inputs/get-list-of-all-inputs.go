@@ -13,18 +13,15 @@ func main() {
 		panic(err)
 	}
 
-	sess := cl.NewSession(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-
-	err = sess.Connect()
+	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
 	if err != nil {
 		panic(err)
 	}
 
-	// Get a list of all inputs.
-	svc := cl.NewInputService(sess)
+	r := cl.NewRequest(sess)
+	r.WithPagination(1, 5)
 
-	svc.WithPagination(1, 5) // Start from page 1 with 5 items per page.
-	resp, err := svc.ListAllInputs()
+	resp, err := sess.ListAllInputs(r)
 	if err != nil {
 		panic(err)
 	}

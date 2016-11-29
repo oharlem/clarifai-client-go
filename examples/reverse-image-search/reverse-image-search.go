@@ -13,23 +13,21 @@ func main() {
 		panic(err)
 	}
 
-	sess := cl.NewSession(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-
-	err = sess.Connect()
+	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
 	if err != nil {
 		panic(err)
 	}
 
-	// Reverse Image Search.
-	svc := cl.NewSearchService(sess)
+	q := cl.NewSearchQuery(cl.SearchQueryTypeAnd)
 
-	resp, err := svc.ReverseImageSearch(
-		cl.ImageInputFromURL("https://samples.clarifai.com/metro-north.jpg", nil),
-		cl.ImageInputFromURL("https://samples.clarifai.com/puppy.jpeg", nil),
-	)
+	i := cl.NewImageFromURL("https://samples.clarifai.com/metro-north.jpg")
+	q.WithImage(i)
+
+	resp, err := sess.Search(q)
 	if err != nil {
 		panic(err)
 	}
 
 	cl.PP(resp)
+
 }

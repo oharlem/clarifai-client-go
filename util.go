@@ -1,7 +1,6 @@
 package clarifai
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 )
@@ -18,9 +17,4 @@ func PE(v interface{}) string {
 // PP prints out prettified object info.
 func PP(v interface{}) {
 	fmt.Print(PE(v))
-}
-
-// EncBytesToBase64 Encodes []byte input into a base64 string.
-func EncBytesToBase64(data []byte) string {
-	return base64.StdEncoding.EncodeToString(data)
 }
