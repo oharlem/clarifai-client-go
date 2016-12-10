@@ -1,3 +1,10 @@
+Release v0.4.0 (2016-12-09)
+===
+* Major API refactoring / simplification 
+* Adde all input operations
+* Examples should use 2 environment variables CLARIFAI_API_ID and CLARIFAI_API_SECRET for communications with your Clarifai API account.
+
+
 Release v0.3.0 (2016-11-28)
 ===
 * Major refactoring & cleanup.

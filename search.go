@@ -1,13 +1,9 @@
 package clarifai
 
-import (
-	"net/url"
-	"strconv"
-)
+import "net/http"
 
 const (
-	DefaultItemsPerPageQty = 20
-	SearchQueryTypeAnd     = "and"
+	SearchQueryTypeAnd = "and"
 	// SearchQueryTypeOr      = "or" // reserved
 )
 
@@ -16,86 +12,84 @@ type Hit struct {
 	Input *Input  `json:"input,omitempty"`
 }
 
-type SearchQuery struct {
-	QueryObject *QueryObject `json:"query"`
-	Session     *Session     `json:"-"`
-	Page        int          `json:"-"`
-	PerPage     int          `json:"-"`
+type SearchRequest struct {
+	QueryObject *QueryObject `json:"query,omitempty"`
 	Type        string       `json:"-"`
+	Pagination  *pagination  `json:"pagination,omitempty"`
 }
 
-func (q *SearchQuery) GetPage() int {
-	return q.Page
+type pagination struct {
+	Page    int `json:"page"`
+	PerPage int `json:"per_page"`
 }
 
-func (q *SearchQuery) GetPerPage() int {
-	return q.PerPage
-}
-
-// NewSearchQuery initializes a new query. Available types - "AND" and "OR".
-func NewSearchQuery(t string) *SearchQuery {
-	return &SearchQuery{
-		Page:        0,
-		PerPage:     DefaultItemsPerPageQty,
+// NewSearchQuery initializes a new SearchRequest object with search query properties.
+func NewSearchQuery(t string) *SearchRequest {
+	return &SearchRequest{
 		QueryObject: &QueryObject{},
 		Type:        t,
 	}
 }
 
+// NewAndSearchQuery for a search query of type "and"
+func NewAndSearchQuery() *SearchRequest {
+	return NewSearchQuery(SearchQueryTypeAnd)
+}
+
 // WithUserConcept adds a positive match condition to the user-defined set of concepts.
-func (q *SearchQuery) WithUserConcept(s string) {
+func (r *SearchRequest) WithUserConcept(c string) {
 
 	i := Input{}
-	i.AddConcept(s, true)
+	i.AddConcept(c, true)
 
 	qf := QueryFragment{
 		Input: &i,
 	}
 
-	q.AddFragment(&qf)
+	r.addFragment(&qf)
 }
 
 // WithoutUserConcept adds a negative match condition to the user-defined set of concepts.
-func (q *SearchQuery) WithoutUserConcept(s string) {
+func (r *SearchRequest) WithoutUserConcept(c string) {
 
 	i := Input{}
-	i.AddConcept(s, false)
+	i.AddConcept(c, false)
 
 	qf := QueryFragment{
 		Input: &i,
 	}
 
-	q.AddFragment(&qf)
+	r.addFragment(&qf)
 }
 
 // WithAPIConcept adds a positive match condition to the API-defined set of concepts.
-func (q *SearchQuery) WithAPIConcept(s string) {
+func (r *SearchRequest) WithAPIConcept(c string) {
 
 	qo := QueryOutput{}
-	qo.AddConcept(s, true)
+	qo.AddConcept(c, true)
 
 	qf := QueryFragment{
 		Output: &qo,
 	}
 
-	q.AddFragment(&qf)
+	r.addFragment(&qf)
 }
 
 // WithoutAPIConcept adds a negative match condition to the API-provided set of concepts.
-func (q *SearchQuery) WithoutAPIConcept(s string) {
+func (r *SearchRequest) WithoutAPIConcept(c string) {
 
 	qo := QueryOutput{}
-	qo.AddConcept(s, false)
+	qo.AddConcept(c, false)
 
 	qf := QueryFragment{
 		Output: &qo,
 	}
 
-	q.AddFragment(&qf)
+	r.addFragment(&qf)
 }
 
 // WithImage adds a positive match condition by an image.
-func (q *SearchQuery) WithImage(i *Image) error {
+func (r *SearchRequest) WithImage(i *Image) {
 
 	qf := QueryFragment{
 		Output: &QueryOutput{
@@ -105,13 +99,11 @@ func (q *SearchQuery) WithImage(i *Image) error {
 		},
 	}
 
-	q.AddFragment(&qf)
-
-	return nil
+	r.addFragment(&qf)
 }
 
 // WithMetadata adds a match filter for inputs, that were added with custom metadata.
-func (q *SearchQuery) WithMetadata(m interface{}) {
+func (r *SearchRequest) WithMetadata(m interface{}) {
 	i := &Input{}
 	i.SetMetadata(m)
 
@@ -119,50 +111,21 @@ func (q *SearchQuery) WithMetadata(m interface{}) {
 		Input: i,
 	}
 
-	q.AddFragment(&qf)
+	r.addFragment(&qf)
 }
 
-// AddFragment adds fragment to the current clause of the query.
-func (q *SearchQuery) AddFragment(qf *QueryFragment) {
-	if q.Type == SearchQueryTypeAnd {
-		q.QueryObject.QueryAnds = append(q.QueryObject.QueryAnds, qf)
+// addFragment adds fragment to the current clause of the query.
+func (r *SearchRequest) addFragment(qf *QueryFragment) {
+	if r.Type == SearchQueryTypeAnd {
+		r.QueryObject.Ands = append(r.QueryObject.Ands, qf)
 	}
-}
-
-// SetPagination sets pagination configuration to the search query.
-func (q *SearchQuery) SetPagination(page, perPage int) {
-	q.Page = page
-	q.PerPage = perPage
 }
 
 // Search issues a search request to Clarifai API with a provided search query.
-func (s *Session) Search(q *SearchQuery) (*Response, error) {
-	out := &Response{}
+func (s *Session) Search(p *SearchRequest) *Request {
 
-	payload, err := PrepPayload(q)
-	if err != nil {
-		return out, err
-	}
+	r := NewRequest(s, http.MethodPost, "searches")
+	r.SetPayload(p)
 
-	err = s.PostCall(GetEndpoint(s, "searches", q), payload, out)
-	if err != nil {
-		return out, err
-	}
-
-	return out, nil
-}
-
-// GetEndpoint generates a service endpoint. First page starts with 1.
-func GetEndpoint(s *Session, endpoint string, q Requester) string {
-
-	uri := s.GetAPIHost(endpoint)
-
-	if q.GetPage() > 0 && q.GetPerPage() > 0 {
-		v := url.Values{}
-		v.Set("page", strconv.Itoa(q.GetPage()))
-		v.Add("per_page", strconv.Itoa(q.GetPerPage()))
-		return uri + "?" + v.Encode()
-	}
-
-	return uri
+	return r
 }

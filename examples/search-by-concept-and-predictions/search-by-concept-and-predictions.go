@@ -1,29 +1,25 @@
 package main
 
 import (
+	"os"
+
 	cl "github.com/mpmlj/clarifai-client-go"
-	"github.com/spf13/viper"
 )
 
 func main() {
-	viper.AddConfigPath("..")
-	viper.SetConfigName("conf")
-	err := viper.ReadInConfig()
+
+	sess, err := cl.Connect(os.Getenv("CLARIFAI_API_ID"), os.Getenv("CLARIFAI_API_SECRET"))
 	if err != nil {
 		panic(err)
 	}
 
-	sess, err := cl.Connect(viper.GetString("clarifai_api.client_id"), viper.GetString("clarifai_api.client_secret"))
-	if err != nil {
-		panic(err)
-	}
+	q := cl.NewAndSearchQuery()
+	q.WithUserConcept("album") // inputs
+	//q.WithoutUserConcept("vacation") // outputs
+	//q.WithAPIConcept("singer") // outputs
+	//q.WithoutAPIConcept("singer") // outputs
 
-	q := cl.NewSearchQuery(cl.SearchQueryTypeAnd)
-	q.WithUserConcept("album")  // inputs
-	//q.WithoutAPIConcept("dog") // outputs
-	q.SetPagination(1, 5)
-
-	resp, err := sess.Search(q)
+	resp, err := sess.Search(q).WithPagination(1, 5).Do()
 	if err != nil {
 		panic(err)
 	}

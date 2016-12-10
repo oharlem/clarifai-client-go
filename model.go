@@ -1,5 +1,9 @@
 package clarifai
 
+import (
+	"net/http"
+)
+
 const (
 	// Public pre-defined models.
 	// Source: https://developer-preview.clarifai.com/guide/publicmodels#public-models
@@ -41,4 +45,13 @@ type ModelVersion struct {
 	ID        string         `json:"id"`
 	CreatedAt string         `json:"created_at"`
 	Status    *ServiceStatus `json:"status"`
+}
+
+// Predict fetches prediction info for a provided asset from a given model.
+func (s *Session) Predict(i *Inputs) *Request {
+
+	r := NewRequest(s, http.MethodPost, "models/"+i.modelID+"/outputs")
+	r.SetPayload(i)
+
+	return r
 }

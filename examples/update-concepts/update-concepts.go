@@ -13,11 +13,13 @@ func main() {
 		panic(err)
 	}
 
-	// Search By Predicted Concept.
-	q := cl.NewAndSearchQuery()
-	q.WithAPIConcept("vacation") // inputs
+	// Map of desired concept changes as "concept id" -> bool state.
+	concepts := map[string]bool{
+		"album":    false,
+		"vacation": true,
+	}
 
-	resp, err := sess.Search(q).Do()
+	resp, err := sess.UpdateInputConcepts("travel-1", concepts).Do()
 	if err != nil {
 		panic(err)
 	}

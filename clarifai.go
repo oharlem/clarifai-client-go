@@ -2,6 +2,6 @@
 package clarifai
 
 const (
-	ClientVersion = "0.3"
-	InputLimit = 128
+	ClientVersion = "0.4"
+	InputLimit    = 128
 )

@@ -9,7 +9,6 @@ import (
 
 type Image struct {
 	Concepts   []map[string]interface{} `json:"concepts,omitempty"`
-	//Data *ImageData `json:"data, omitempty"`
 	Metadata   interface{}              `json:"metadata,omitempty"`
 	Properties *ImageProperties         `json:"image, omitempty"`
 }
@@ -27,13 +26,24 @@ type ImageProperties struct {
 	Crop              []float32 `json:"crop,omitempty"`
 }
 
+var AllowedMimeTypes map[string]struct{}
+
+func init() {
+	AllowedMimeTypes = map[string]struct{}{
+		"image/bmp":  struct{}{},
+		"image/jpeg": struct{}{},
+		"image/png":  struct{}{},
+		"image/tiff": struct{}{},
+	}
+}
+
 // NewImageFromURL instantiates a new image based on URL.
 func NewImageFromURL(url string) *Image {
 
 	return &Image{
-			Properties: &ImageProperties{
-				URL: url,
-			},
+		Properties: &ImageProperties{
+			URL: url,
+		},
 	}
 }
 
@@ -46,9 +56,9 @@ func NewImageFromFile(path string) (*Image, error) {
 	}
 
 	return &Image{
-			Properties: &ImageProperties{
-				Base64: base64Str,
-			},
+		Properties: &ImageProperties{
+			Base64: base64Str,
+		},
 	}, nil
 }
 
@@ -65,21 +75,35 @@ func (i *Image) AddMetadata(m interface{}) {
 	i.Metadata = m
 }
 
-// AddConcept adds an image concept.
-func (i *Image) AddConcept(id string, value interface{}) {
-	c := make(map[string]interface{})
-	c["id"] = id
-	c["value"] = value
+// AddCrop adds an image metadata.
+func (i *Image) AddCrop(args ...float32) {
 
-	i.Concepts = append(i.Concepts, c)
+	if i.Properties == nil {
+		i.Properties = &ImageProperties{}
+	}
+
+	for _, v := range args {
+		i.Properties.Crop = append(i.Properties.Crop, v)
+	}
 }
 
-func (i *Image) AddConcepts(c ...string) {
+// AddConcept adds an image concept.
+func (i *Image) AddConcept(id string, value interface{}) {
+
+	i.Concepts = append(i.Concepts, map[string]interface{}{
+		"id":    id,
+		"value": value,
+	})
+}
+
+// AddConcepts adds a list of concepts to an image.
+func (i *Image) AddConcepts(c []string) {
 	for _, v := range c {
 		i.AddConcept(v, true)
 	}
 }
 
+// addFromBase64 reads a local image, validates it and returns it as a base64 string.
 func addFromBase64(filename string) (string, error) {
 
 	file, err := os.Open(filename)
@@ -94,7 +118,7 @@ func addFromBase64(filename string) (string, error) {
 	}
 
 	validationErr := validateLocalFile(data)
-	if validateLocalFile(data) != nil {
+	if validationErr != nil {
 		return "", validationErr
 	}
 

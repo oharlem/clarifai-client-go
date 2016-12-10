@@ -16,51 +16,25 @@ func TestNewSession(t *testing.T) {
 		t.Fatalf("Actual: %v, expected: %v", actual, expected)
 	}
 
-	if sess.ClientID != mockClientID {
-		t.Errorf("Actual: %v, expected: %v", sess.ClientID, mockClientID)
+	if sess.clientID != mockClientID {
+		t.Errorf("Actual: %v, expected: %v", sess.clientID, mockClientID)
 	}
 
-	if sess.ClientSecret != mockClientSecret {
-		t.Errorf("Actual: %v, expected: %v", sess.ClientSecret, mockClientSecret)
+	if sess.clientSecret != mockClientSecret {
+		t.Errorf("Actual: %v, expected: %v", sess.clientSecret, mockClientSecret)
 	}
 
-	if sess.AccessToken != "" {
-		t.Errorf("Actual: %v, expected: %v", sess.AccessToken, "to be empty")
+	if sess.accessToken != "" {
+		t.Errorf("Actual: %v, expected: %v", sess.accessToken, "to be empty")
 	}
 }
 
-func TestGetAPIHost(t *testing.T) {
+func TestBuildURI(t *testing.T) {
 
 	sess := NewSession(mockClientID, mockClientSecret)
 
-	actual := sess.GetAPIHost("foo")
+	actual := sess.buildURI("foo")
 	expected := apiHost + "/" + apiVersion + "/" + "foo"
-
-	if actual != expected {
-		t.Errorf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestSetAccessToken(t *testing.T) {
-	sess := NewSession(mockClientID, mockClientSecret)
-
-	sess.setAccessToken("foo")
-
-	actual := sess.AccessToken
-	expected := "foo"
-
-	if actual != expected {
-		t.Errorf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestGetAccessToken(t *testing.T) {
-	sess := NewSession(mockClientID, mockClientSecret)
-
-	sess.AccessToken = "foo"
-
-	actual := sess.GetAccessToken()
-	expected := "foo"
 
 	if actual != expected {
 		t.Errorf("Actual: %v, expected: %v", actual, expected)
@@ -73,7 +47,7 @@ func TestAuthResponseValidation_Success(t *testing.T) {
 		AccessToken: "foo",
 	}
 
-	err := AuthResponseValidation(resp)
+	err := authResponseValidation(resp)
 	if err != nil {
 		t.Errorf("Should return no error, but got %v", err)
 	}
@@ -81,7 +55,7 @@ func TestAuthResponseValidation_Success(t *testing.T) {
 
 func TestAuthResponseValidation_Fail_No_Token(t *testing.T) {
 
-	actual := AuthResponseValidation(&AuthResponse{})
+	actual := authResponseValidation(&AuthResponse{})
 	expected := ErrNoAuthenticationToken
 
 	if actual != expected {
@@ -99,7 +73,7 @@ func TestAuthResponseValidation_SetTokenExpiration(t *testing.T) {
 		ExpiresIn: expiresIn,
 	}
 
-	startingTime, expirationTime := sess.SetTokenExpiration(resp.ExpiresIn)
+	startingTime, expirationTime := sess.setTokenExpiration(resp.ExpiresIn)
 
 	if expirationTime != startingTime+expiresIn {
 		t.Errorf("Actual: %v, expected: %v", expirationTime, startingTime+expiresIn)
@@ -115,9 +89,9 @@ func TestAuthResponseValidation_IsTokenExpired_False(t *testing.T) {
 	resp := &AuthResponse{
 		ExpiresIn: expiresIn,
 	}
-	sess.SetTokenExpiration(resp.ExpiresIn)
+	sess.setTokenExpiration(resp.ExpiresIn)
 
-	actual := sess.IsTokenExpired()
+	actual := sess.isTokenExpired()
 	expected := false
 
 	if actual != expected {
@@ -128,9 +102,9 @@ func TestAuthResponseValidation_IsTokenExpired_False(t *testing.T) {
 func TestAuthResponseValidation_IsTokenExpired_True(t *testing.T) {
 
 	sess := NewSession(mockClientID, mockClientSecret)
-	sess.TokenExpiration = 0
+	sess.tokenExpiration = 0
 
-	actual := sess.IsTokenExpired()
+	actual := sess.isTokenExpired()
 	expected := true
 
 	if actual != expected {
@@ -154,7 +128,7 @@ func TestSession_Connect(t *testing.T) {
 		t.Fatalf("Should have no errors, but got %v", err)
 	}
 
-	actual := sess.GetAccessToken()
+	actual := sess.accessToken
 	expected := "bCGdwie3gIJoRISG5Ejz2Je57inNTj"
 
 	if expected != actual {

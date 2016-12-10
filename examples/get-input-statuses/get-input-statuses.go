@@ -13,11 +13,7 @@ func main() {
 		panic(err)
 	}
 
-	// Search By Predicted Concept.
-	q := cl.NewAndSearchQuery()
-	q.WithAPIConcept("vacation") // inputs
-
-	resp, err := sess.Search(q).Do()
+	resp, err := sess.GetInputStatuses().Do()
 	if err != nil {
 		panic(err)
 	}

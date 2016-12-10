@@ -6,33 +6,7 @@ import (
 	"time"
 )
 
-func TestNewPredictService_SetModel(t *testing.T) {
-
-	r := NewRequest(sess)
-	r.SetModel(PublicModelFood)
-
-	actual := r.ModelID
-	expected := PublicModelFood
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestNewPredictService_GetModel(t *testing.T) {
-
-	r := NewRequest(sess)
-	r.SetModel(PublicModelFood)
-
-	actual := r.GetModel()
-	expected := PublicModelFood
-
-	if actual != expected {
-		t.Fatalf("Actual: %v, expected: %v", actual, expected)
-	}
-}
-
-func TestPredictService_GetPredictions(t *testing.T) {
+func TestSession_Predict(t *testing.T) {
 
 	mux.HandleFunc("/"+apiVersion+"/models/"+PublicModelGeneral+"/outputs", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(200)
@@ -41,11 +15,11 @@ func TestPredictService_GetPredictions(t *testing.T) {
 		PrintMock(t, w, "resp/ok_predict_1img.json")
 	})
 
-	sess.TokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
+	sess.tokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
 
-	r := NewRequest(sess)
-	_ = r.AddImageInput(NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"))
-	resp, err := sess.GetPredictions(r)
+	r := InitInputs()
+	_ = r.AddImageInput(NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"), "")
+	resp, err := sess.Predict(r).Do()
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %v", err)
 	}

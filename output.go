@@ -1,5 +1,6 @@
 package clarifai
 
+// Output query fragment.
 type Output struct {
 	ID        string         `json:"id"`
 	Status    *ServiceStatus `json:"status,omitempty"`
@@ -7,10 +8,6 @@ type Output struct {
 	Model     *Model         `json:"model,omitempty"`
 	Input     *Input         `json:"input,omitempty"`
 	Data      *OutputData    `json:"data,omitempty"`
-}
-
-type OutputObject struct {
-	Outputs []*Output `json:"outputs"`
 }
 
 type OutputData struct {

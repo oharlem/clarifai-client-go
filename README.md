@@ -14,11 +14,24 @@ clarifai-client-go is an unofficial Go client for [Clarifai](https://www.clarifa
 #### Predict calls
 - Get predictions 
 - With a specific model
-- Add an image input from URL
-- Add an image input from a local file
+
   
 #### Input calls
+- Add an image input from URL
+- Add an image input from a local file
+- Add image with concepts
+- Add image with custom metadata
+- Add image with crop
 - Get a list of all inputs
+- Get input by ID
+- Get input status
+- Get status of all inputs
+- Input update adding concepts
+- Input update deleting concepts
+- Delete single input by ID
+- Delete multiple inputs
+- Delete all inputs
+
  
 #### Search
 - Add images to a search index
@@ -36,14 +49,16 @@ go get -u github.com/mpmlj/clarifai-client-go
 ```
 
 ## Examples
-Check directory /examples for fully-functional examples.
-_You need to update conf.yml with your Clarifai API credentials._
+Check directory ``/examples`` for fully-functional examples.
+Pleae note, you need to set two env variables first:
+- CLARIFAI_API_ID
+- CLARIFAI_API_SECRET
+
 
 
 ## Roadmap
 
 - Training
-- Advanced input management
 - Advanced model management
 
  
