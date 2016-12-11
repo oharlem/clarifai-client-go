@@ -1,7 +1,7 @@
 Release v0.4.0 (2016-12-09)
 ===
 * Major API refactoring / simplification 
-* Adde all input operations
+* Added all input operations
 * Examples should use 2 environment variables CLARIFAI_API_ID and CLARIFAI_API_SECRET for communications with your Clarifai API account.
 
 

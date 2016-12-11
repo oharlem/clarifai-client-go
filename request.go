@@ -79,8 +79,8 @@ func (r *Request) addPagination() {
 					Page:    r.page,
 					PerPage: r.perPage,
 				}
+				r.payload = p
 			}
-			r.payload = p
 
 		} else {
 			v := url.Values{}
