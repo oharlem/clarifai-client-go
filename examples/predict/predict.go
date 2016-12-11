@@ -29,6 +29,7 @@ func main() {
 	// As per https://developer-preview.clarifai.com/guide/predict#predictBy,
 	// general model is used by default (ID "aaa03c23b3724a16a56b629203edc62c"),
 	// but you can also set your own model using a SetModel() method on your input.
+	// data.SetModel("music-model-id-1")
 	data.SetModel(cl.PublicModelTravel)
 
 	resp, err := sess.Predict(data).Do()

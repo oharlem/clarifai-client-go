@@ -1,0 +1,7 @@
+{
+  "status": {
+    "code": 21202,
+    "description": "Invalid model argument",
+    "details": "There are no concepts added to this model yet. Please call: PATCH /models/{model_id}/output_info/data/concepts to add or remove concepts"
+  }
+}

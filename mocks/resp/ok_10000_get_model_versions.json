@@ -1,0 +1,24 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "model_versions": [
+    {
+      "id": "d88847bb75514fceaf74bf36606d1343",
+      "created_at": "2016-12-11T00:54:39Z",
+      "status": {
+        "code": 21111,
+        "description": "Model training had no positive examples."
+      }
+    },
+    {
+      "id": "c85c99ba18aa4b0da0a597829b13ca37",
+      "created_at": "2016-12-10T04:00:15Z",
+      "status": {
+        "code": 21111,
+        "description": "Model training had no positive examples."
+      }
+    }
+  ]
+}

@@ -1,7 +1,6 @@
 package clarifai
 
 import (
-	"net/http"
 	"reflect"
 	"testing"
 )
@@ -114,14 +113,7 @@ func TestAuthResponseValidation_IsTokenExpired_True(t *testing.T) {
 
 func TestSession_Connect(t *testing.T) {
 
-	mux.HandleFunc("/"+apiVersion+"/token", func(w http.ResponseWriter, r *http.Request) {
-
-		w.WriteHeader(200)
-
-		w.Header().Set("Content-Type", "application/json")
-
-		PrintMock(t, w, "resp/ok_auth.json")
-	})
+	mockRoute(t, "token", "resp/ok_auth.json")
 
 	err := sess.Connect()
 	if err != nil {

@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
-	"time"
 )
 
 func TestInitInputs(t *testing.T) {
@@ -100,16 +99,7 @@ func TestInput_SetMetadata(t *testing.T) {
 
 func TestSession_GetAllInputs(t *testing.T) {
 
-	mux.HandleFunc("/"+apiVersion+"/inputs", func(w http.ResponseWriter, r *http.Request) {
-
-		w.WriteHeader(200)
-
-		w.Header().Set("Content-Type", "application/json")
-
-		PrintMock(t, w, "resp/ok_inputs.json")
-	})
-
-	sess.tokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
+	mockRoute(t, "inputs", "resp/ok_inputs.json")
 
 	resp, err := sess.GetAllInputs().Do()
 	if err != nil {
