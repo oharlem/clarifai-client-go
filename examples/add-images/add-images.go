@@ -35,10 +35,10 @@ func main() {
 	i.AddCrop(0.2, 0.4, 0.3, 0.6)
 
 	// Add image to request.
-	_ = data.AddImageInput(i, "travel-1")
+	_ = data.AddInput(i, "travel-1")
 
 	// ...or you can skip image id for it to be automatically generated for you:
-	// _ = data.AddImageInput(i, "")
+	// _ = data.AddInput(i, "")
 
 	// Send request.
 	resp, err := sess.AddInputs(data).Do()

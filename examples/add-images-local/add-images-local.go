@@ -35,7 +35,7 @@ func main() {
 	i.AddMetadata(m)
 
 	// Add image to request.
-	err = data.AddImageInput(i, "dm-1")
+	err = data.AddInput(i, "dm-1")
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +47,7 @@ func main() {
 		panic(err)
 	}
 	i2.AddConcepts([]string{"band", "Depeche Mode"})
-	err = data.AddImageInput(i2, "dm-2")
+	err = data.AddInput(i2, "dm-2")
 	if err != nil {
 		panic(err)
 	}

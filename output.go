@@ -12,8 +12,8 @@ type Output struct {
 
 type OutputData struct {
 	Concepts []*OutputConcept `json:"concepts,omitempty"`
-	Image    *ImageData      `json:"image,omitempty"`
-	Metadata *interface{}    `json:"metadata,omitempty"`
+	Image    *ImageData       `json:"image,omitempty"`
+	Metadata *interface{}     `json:"metadata,omitempty"`
 }
 
 type OutputConcept struct {

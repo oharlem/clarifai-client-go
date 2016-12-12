@@ -21,8 +21,8 @@ func InitInputs() *Inputs {
 	}
 }
 
-// AddImageInput adds an image input to a request.
-func (i *Inputs) AddImageInput(im *Image, id string) error {
+// AddInput adds an image input to a request.
+func (i *Inputs) AddInput(im *Image, id string) error {
 	if len(i.Inputs) >= InputLimit {
 		return ErrInputLimitReached
 	}
@@ -45,7 +45,7 @@ func (i *Inputs) SetModel(m string) {
 	i.modelID = m
 }
 
-// AddConcept adds concepts to a given input.
+// AddConcept adds concepts to input.
 func (i *Input) AddConcept(id string, value interface{}) {
 
 	if i.Data == nil {
@@ -58,7 +58,7 @@ func (i *Input) AddConcept(id string, value interface{}) {
 	})
 }
 
-// SetMetadata adds metadata to q query input item ("input" -> "data" -> "metadata").
+// SetMetadata adds metadata to a query input item ("input" -> "data" -> "metadata").
 func (q *Input) SetMetadata(i interface{}) {
 	if q.Data == nil {
 		q.Data = &Image{}

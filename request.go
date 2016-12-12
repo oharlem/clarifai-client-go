@@ -11,7 +11,7 @@ const (
 	defaultItemsPerPageQty = 20
 )
 
-// Request contains all information necessary to create a request to Clarifai API.
+// Request contains all information necessary to create an HTTP request to Clarifai API.
 type Request struct {
 	method  string
 	page    int
@@ -34,6 +34,7 @@ func NewRequest(s *Session, method, path string) *Request {
 	}
 }
 
+// SetPayload sets payload to request.
 func (r *Request) SetPayload(p interface{}) {
 	r.payload = p
 }

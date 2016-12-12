@@ -9,7 +9,7 @@ func TestSession_Predict(t *testing.T) {
 	mockRoute(t, "models/"+PublicModelGeneral+"/outputs", "resp/ok_predict_1img.json")
 
 	r := InitInputs()
-	_ = r.AddImageInput(NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"), "")
+	_ = r.AddInput(NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"), "")
 	resp, err := sess.Predict(r).Do()
 	if err != nil {
 		t.Fatalf("Should have no errors, but got %v", err)

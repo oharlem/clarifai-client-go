@@ -26,10 +26,12 @@ type ImageProperties struct {
 	Crop              []float32 `json:"crop,omitempty"`
 }
 
-var AllowedMimeTypes map[string]struct{}
+// SupportedMimeTypes is a map of supported image types
+// as per https://developer-preview.clarifai.com/guide/#supported-types
+var SupportedMimeTypes map[string]struct{}
 
 func init() {
-	AllowedMimeTypes = map[string]struct{}{
+	SupportedMimeTypes = map[string]struct{}{
 		"image/bmp":  struct{}{},
 		"image/jpeg": struct{}{},
 		"image/png":  struct{}{},
@@ -117,9 +119,9 @@ func addFromBase64(filename string) (string, error) {
 		return "", err
 	}
 
-	validationErr := validateLocalFile(data)
-	if validationErr != nil {
-		return "", validationErr
+	valErr := validateLocalFile(data)
+	if valErr != nil {
+		return "", valErr
 	}
 
 	return base64.StdEncoding.EncodeToString(data), nil
@@ -129,7 +131,7 @@ func addFromBase64(filename string) (string, error) {
 func validateLocalFile(data []byte) error {
 
 	mimeType := http.DetectContentType(data)
-	_, ok := AllowedMimeTypes[mimeType]
+	_, ok := SupportedMimeTypes[mimeType]
 	if !ok {
 		return ErrUnsupportedMimeType
 	}

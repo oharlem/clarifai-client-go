@@ -1,3 +1,8 @@
+Release v0.5.1 (2016-12-12) 
+===
+Minor cleanup release to updated docs and refactoring.
+
+
 Release v0.5.0 (2016-12-11)
 ===
 
