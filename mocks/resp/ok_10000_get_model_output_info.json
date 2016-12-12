@@ -1,0 +1,45 @@
+{
+  "status": {
+    "code": 10000,
+    "description": "Ok"
+  },
+  "model": {
+    "name": "general-v1.3",
+    "id": "eab1fd01a5544225b32d5d2937e05041",
+    "created_at": "2016-11-24T18:15:43Z",
+    "app_id": "c3915e768bf44e1eb469483642a664ef",
+    "output_info": {
+      "type": "concept",
+      "data": {
+        "concepts": [
+          {
+            "id": "album",
+            "name": "album",
+            "created_at": "2016-11-27T23:10:05Z",
+            "updated_at": "2016-11-27T23:10:05Z",
+            "app_id": "c3915e768bf44e1eb469483642a664ef"
+          },
+          {
+            "id": "test",
+            "name": "test",
+            "created_at": "2016-11-28T02:32:36Z",
+            "updated_at": "2016-11-28T02:32:36Z",
+            "app_id": "c3915e768bf44e1eb469483642a664ef"
+          }
+        ]
+      },
+      "output_config": {
+        "concepts_mutually_exclusive": false,
+        "closed_environment": false
+      }
+    },
+    "model_version": {
+      "id": "d88847bb75514fceaf74bf36606d1343",
+      "created_at": "2016-12-11T00:54:39Z",
+      "status": {
+        "code": 21111,
+        "description": "Model training had no positive examples."
+      }
+    }
+  }
+}

@@ -137,7 +137,7 @@ func (s *Session) HTTPCall(method, path string, payload interface{}) (*Response,
 			return resp, err
 		}
 	}
-
+//PP(payload)
 	if payload != nil {
 		p, err = prepPayload(payload)
 		if err != nil {

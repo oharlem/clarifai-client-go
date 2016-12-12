@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 const (
@@ -25,16 +26,24 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	setup()
+	testSetup()
 	code := m.Run()
 	shutdown()
 	os.Exit(code)
 }
 
-func setup() {
+func testSetup() {
 	mux = http.NewServeMux()
 	ts = httptest.NewServer(mux)
 	sess = NewSession(mockClientID, mockClientSecret)
+	sess.host = ts.URL
+}
+
+// serverReset re-initializes test server for a function.
+// Required to allow running same routes in multiple tests.
+func serverReset() {
+	mux = http.NewServeMux()
+	ts = httptest.NewServer(mux)
 	sess.host = ts.URL
 }
 
@@ -42,7 +51,18 @@ func shutdown() {
 	ts.Close()
 }
 
-func PrintMock(t *testing.T, w http.ResponseWriter, path string) {
+func mockRoute(t *testing.T, path, mock string) {
+	mux.HandleFunc("/"+apiVersion+"/"+path, func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "application/json")
+
+		printMock(t, w, mock)
+	})
+
+	sess.tokenExpiration = time.Now().Second() + 3600 // imitate existence of non-expired token
+}
+
+func printMock(t *testing.T, w http.ResponseWriter, path string) {
 	mock, err := ioutil.ReadFile("mocks/" + path)
 	if err != nil {
 		t.Fatalf("Error reading a mock file: %s", path)
@@ -54,7 +74,7 @@ func PrintMock(t *testing.T, w http.ResponseWriter, path string) {
 func CompareStructs(t *testing.T, expected, actual interface{}) {
 	if !reflect.DeepEqual(expected, actual) {
 		t.Error("Incorrect response")
-		t.Logf("\nExpected:\n%+v\n\n", PE(expected))
-		t.Logf("\nActual:\n%+v\n\n", PE(actual))
+		t.Logf("\nEXPECTED:\n%+v\n\n", PE(expected))
+		t.Logf("\nACTUAL:\n%+v\n\n", PE(actual))
 	}
 }

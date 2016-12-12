@@ -11,6 +11,7 @@ clarifai-client-go is an unofficial Go client for [Clarifai](https://www.clarifa
 - Token refresh on expiry
 - Pagination support
 
+
 #### Predict calls
 - Get predictions 
 - With a specific model
@@ -32,7 +33,25 @@ clarifai-client-go is an unofficial Go client for [Clarifai](https://www.clarifa
 - Delete multiple inputs
 - Delete all inputs
 
- 
+
+#### Models
+- Create a model
+- Get all models
+- Get a model by id
+- Get model output info
+- Get all model versions
+- Get model version by version ID
+- Get all model inputs
+- Get model inputs used to train a specific version
+- Delete model
+- Delete model version
+- Delete all models
+- Model training
+- Add model concepts
+- Delete model concepts
+- Model search by name and/or type
+
+
 #### Search
 - Add images to a search index
 - Search by predicted concepts

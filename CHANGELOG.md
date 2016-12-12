@@ -1,3 +1,10 @@
+Release v0.5.0 (2016-12-11)
+===
+
+- Added model operations
+- DEV: added serverReset() test helper, to re-init test server for identical routes.
+
+
 Release v0.4.0 (2016-12-09)
 ===
 * Major API refactoring / simplification 
