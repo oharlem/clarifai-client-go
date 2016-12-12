@@ -101,7 +101,6 @@ func TestSearchRequest_WithImage(t *testing.T) {
 	}
 }
 
-
 func TestSearchRequest_WithMetadata(t *testing.T) {
 
 	q := NewAndSearchQuery()

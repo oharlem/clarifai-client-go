@@ -20,12 +20,12 @@ func TestInitInputs(t *testing.T) {
 	}
 }
 
-func TestInputs_AddImageInput(t *testing.T) {
+func TestInputs_AddInput(t *testing.T) {
 
 	data := InitInputs()
 	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
 
-	_ = data.AddImageInput(i, "travel-1")
+	_ = data.AddInput(i, "travel-1")
 
 	expected := "https://samples.clarifai.com/travel.jpg"
 	actual := data.Inputs[0].Data.Properties.URL
@@ -35,17 +35,17 @@ func TestInputs_AddImageInput(t *testing.T) {
 	}
 }
 
-func TestInputs_AddImageInput_Limit(t *testing.T) {
+func TestInputs_AddInput_Limit(t *testing.T) {
 
 	data := InitInputs()
 	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
 
 	for j := 0; j < InputLimit; j++ {
-		_ = data.AddImageInput(i, "travel-1")
+		_ = data.AddInput(i, "travel-1")
 	}
 
 	// This element should be out of limit.
-	err := data.AddImageInput(i, "travel-1")
+	err := data.AddInput(i, "travel-1")
 	if err != ErrInputLimitReached {
 		t.Fatalf("Expected limit error \"%v\", but got: %v", ErrInputLimitReached, err)
 	}
@@ -135,7 +135,7 @@ func TestSession_AddInputs(t *testing.T) {
 
 	data := InitInputs()
 	i := NewImageFromURL("https://samples.clarifai.com/travel.jpg")
-	_ = data.AddImageInput(i, "travel-1")
+	_ = data.AddInput(i, "travel-1")
 
 	resp := sess.AddInputs(data)
 	if reflect.TypeOf(resp).String() != "*clarifai.Request" {

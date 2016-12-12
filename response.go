@@ -1,5 +1,6 @@
 package clarifai
 
+// Response is a universal Clarifai API response object.
 type Response struct {
 	Status        *ServiceStatus  `json:"status,omitempty"`
 	Outputs       []*Output       `json:"outputs,omitempty"`

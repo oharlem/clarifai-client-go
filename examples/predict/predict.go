@@ -16,7 +16,7 @@ func main() {
 	data := cl.InitInputs()
 
 	// Option A. Adding an image from URL.
-	_ = data.AddImageInput(cl.NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"), "")
+	_ = data.AddInput(cl.NewImageFromURL("https://samples.clarifai.com/metro-north.jpg"), "")
 
 	// Option B. Adding an image from a local file.
 	// NOTE. Currently API does not accept a mix of URL and base64 - based images!
@@ -24,7 +24,7 @@ func main() {
 	//if err != nil {
 	//	panic(err)
 	//}
-	//_ = data.AddImageInput(i, "")
+	//_ = data.AddInput(i, "")
 
 	// As per https://developer-preview.clarifai.com/guide/predict#predictBy,
 	// general model is used by default (ID "aaa03c23b3724a16a56b629203edc62c"),

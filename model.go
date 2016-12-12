@@ -86,7 +86,7 @@ func (s *Session) Predict(i *Inputs) *Request {
 	return r
 }
 
-// CreateModel creates a new model by name and ID. If ID is empty, it will bre created automatically by Clarifai API.
+// CreateModel creates a new model. If ID is empty, it will be created automatically by Clarifai API.
 func (s *Session) CreateModel(name string, opt *modelOptions) *Request {
 
 	p := ModelRequest{
@@ -132,6 +132,7 @@ func (s *Session) CreateModel(name string, opt *modelOptions) *Request {
 	return r
 }
 
+// AddModelConcepts adds new concepts to an existing model.
 func (s *Session) AddModelConcepts(ID string, c []string) *Request {
 
 	r := NewRequest(s, http.MethodPatch, "models/"+ID+"/output_info/data/concepts")
@@ -167,7 +168,7 @@ func (s *Session) GetModelOutput(ID string) *Request {
 	return NewRequest(s, http.MethodGet, "models/"+ID+"/output_info")
 }
 
-// GetModelVersion fetches a single model version data.
+// GetModelVersion fetches version data of a single model .
 func (s *Session) GetModelVersion(m, v string) *Request {
 
 	return NewRequest(s, http.MethodGet, "models/"+m+"/versions/"+v)
@@ -191,13 +192,13 @@ func (s *Session) GetModelInputs(ID string) *Request {
 	return NewRequest(s, http.MethodGet, "models/"+ID+"/inputs")
 }
 
-// DeleteModelVersion delete a specific version of a model.
+// DeleteModelVersion deletes a specific version of a model.
 func (s *Session) DeleteModelVersion(m, v string) *Request {
 
 	return NewRequest(s, http.MethodDelete, "models/"+m+"/versions/"+v)
 }
 
-// DeleteModel delete a single model by ID.
+// DeleteModel deletes a single model by ID.
 func (s *Session) DeleteModel(ID string) *Request {
 
 	return NewRequest(s, http.MethodDelete, "models/"+ID)
@@ -209,7 +210,7 @@ func (s *Session) DeleteAllModels() *Request {
 	return NewRequest(s, http.MethodDelete, "models")
 }
 
-// TrainModel trains a model.
+// TrainModel starts a model training operation.
 // When you train a model, you are telling the system to look at all the images with concepts you've provided and learn from them.
 // This train operation is asynchronous. It may take a few seconds for your model to be fully trained and ready.
 func (s *Session) TrainModel(ID string) *Request {
