@@ -69,7 +69,7 @@ go get -u github.com/mpmlj/clarifai-client-go
 
 ## Examples
 Check directory ``/examples`` for fully-functional examples.
-Pleae note, you need to set two env variables first:
+Please note, you need to set two env variables first:
 - CLARIFAI_API_ID
 - CLARIFAI_API_SECRET
 
@@ -77,8 +77,7 @@ Pleae note, you need to set two env variables first:
 
 ## Roadmap
 
-- Training
-- Advanced model management
+- Improve test coverage
 
  
 ## Support
