@@ -135,14 +135,23 @@ func (s *Session) CreateModel(name string, opt *modelOptions) *Request {
 // AddModelConcepts adds new concepts to an existing model.
 func (s *Session) AddModelConcepts(ID string, c []string) *Request {
 
-	r := NewRequest(s, http.MethodPatch, "models/"+ID+"/output_info/data/concepts")
+	r := NewRequest(s, http.MethodPatch, "models/")
 
 	p := struct {
-		Concepts []*OutputConcept `json:"concepts"`
-		Action   string           `json:"action"`
+		Models []Model `json:"models"`
+		Action string  `json:"action"`
 	}{
-		Concepts: sliceToConcepts(c),
-		Action:   "merge_concepts",
+		Models: []Model{
+			{
+				ID: &ID,
+				OutputInfo: &OutputInfo{
+					OutputData: &OutputData{
+						Concepts: sliceToConcepts(c),
+					},
+				},
+			},
+		},
+		Action: "merge",
 	}
 
 	r.SetPayload(p)
