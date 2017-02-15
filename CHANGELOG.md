@@ -1,3 +1,7 @@
+Release v0.5.2 (2017-02-15) 
+===
+Updated AddModelConcepts to match new API.
+
 Release v0.5.1 (2016-12-12) 
 ===
 Minor cleanup release to updated docs and refactoring.
