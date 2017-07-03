@@ -25,6 +25,7 @@ func init() {
 }
 
 type Session struct {
+	apiKey          string
 	clientID        string
 	clientSecret    string
 	accessToken     string
@@ -50,6 +51,14 @@ type ServiceStatus struct {
 	Code        int    `json:"code"`
 	Description string `json:"description"`
 	Details     string `json:"details,omitempty"` // optional
+}
+
+// Create session object with authentication by API Key
+func NewApp(apiKey string) *Session {
+	return &Session{
+		apiKey: apiKey,
+		host:   apiHost,
+	}
 }
 
 // NewSession returns a default session object.
@@ -131,7 +140,7 @@ func (s *Session) HTTPCall(method, path string, payload interface{}) (*Response,
 	var p io.Reader
 
 	// Check for token expiration. If expired, re-authorize.
-	if s.isTokenExpired() {
+	if s.apiKey == "" && s.isTokenExpired() {
 		err = s.Connect()
 		if err != nil {
 			return resp, err
@@ -148,7 +157,11 @@ func (s *Session) HTTPCall(method, path string, payload interface{}) (*Response,
 	if err != nil {
 		return resp, err
 	}
-	req.Header.Set("Authorization", "Bearer "+s.accessToken)
+	if s.apiKey == "" {
+		req.Header.Set("Authorization", "Bearer "+s.accessToken)
+	} else {
+		req.Header.Set("Authorization", "Key "+s.apiKey)
+	}
 	req.Header.Set("Content-Type", "application/json")
 
 	httpClient := &http.Client{}
