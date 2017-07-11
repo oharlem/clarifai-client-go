@@ -69,7 +69,9 @@ go get -u github.com/mpmlj/clarifai-client-go
 
 ## Examples
 Check directory ``/examples`` for fully-functional examples.
-Please note, you need to set two env variables first:
+Please note, you need to set follow env variable first:
+- CLARIFAI_API_KEY
+Or other two if you want use deprecated auth by Client ID & Secret
 - CLARIFAI_API_ID
 - CLARIFAI_API_SECRET
 

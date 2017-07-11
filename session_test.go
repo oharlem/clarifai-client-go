@@ -1,6 +1,7 @@
 package clarifai
 
 import (
+	"net/http"
 	"reflect"
 	"testing"
 )
@@ -126,4 +127,22 @@ func TestSession_Connect(t *testing.T) {
 	if expected != actual {
 		t.Errorf("Actual: %v, expected: %v", actual, expected)
 	}
+}
+
+func TestApiKeyAuth(t *testing.T) {
+	mux.HandleFunc("/"+apiVersion+"/key-test", func(w http.ResponseWriter, r *http.Request) {
+		actual := r.Header.Get("Authorization")
+		expected := "Key test_api_key"
+		if expected != actual {
+			t.Errorf("Actual: %v, expected: %v", actual, expected)
+		}
+
+		w.WriteHeader(200)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte(`{"ok":true}`))
+	})
+
+	app := NewApp("test_api_key")
+	app.host = ts.URL
+	app.HTTPCall("GET", "key-test", nil)
 }
